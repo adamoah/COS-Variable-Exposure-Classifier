@@ -508,13 +508,13 @@ def get_derivative_positions(counts, ws=20, std=5, thresh=0.75, pad=100):
     deriv = np.abs(np.gradient(smooth_x))
 
     max_idxs = np.argpartition(deriv, len(deriv)-2)[-2:] # find the positions of the two highest magnitude in the derivative
-    
+    min_, max_ = np.min(max_idxs), np.max(max_idxs)
     if ((deriv[max_idxs[0]] / deriv[max_idxs[1]]) < thresh): # if the deriv magnitudes are not close enough set one of the bounds to the start or end of the array (whichever is closer)
-        max_idxs[0] = max_idxs[0] if max_idxs[0] >= (len(deriv) - 1 - max_idxs[1]) else 0
-        max_idxs[1] = max_idxs[1] if max_idxs[0] < (len(deriv) - 1 - max_idxs[1]) else (len(deriv) - 1)
+        min_ = min_ if min_ >= (len(deriv) - 1 - max_) else 0
+        max_ = max_ if min_ < (len(deriv) - 1 - max_) else (len(deriv) - 1)
 
     # pad start and end use clip to ensure they do not go outside valid range
-    idxs = np.clip([max_idxs[0] - pad, max_idxs[1] + pad], a_min=0, a_max=(len(deriv) - 1))
+    idxs = np.clip([min_ - pad, max_ + pad], a_min=0, a_max=(len(deriv) - 1))
 
     return idxs[0], idxs[1]
 

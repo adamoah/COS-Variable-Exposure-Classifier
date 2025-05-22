@@ -509,7 +509,7 @@ def get_derivative_positions(counts, ws=20, std=5, thresh=0.75, pad=100):
 
     max_idxs = np.argpartition(deriv, len(deriv)-2)[-2:] # find the positions of the two highest magnitude in the derivative
     
-    if ((max_idxs[0] / max_idxs[1]) < thresh): # if the deriv magnitudes are not close enough set one of the bounds to the start or end of the array (whichever is closer)
+    if ((deriv[max_idxs[0]] / deriv[max_idxs[1]]) < thresh): # if the deriv magnitudes are not close enough set one of the bounds to the start or end of the array (whichever is closer)
         max_idxs[0] = max_idxs[0] if max_idxs[0] >= (len(deriv) - 1 - max_idxs[1]) else 0
         max_idxs[1] = max_idxs[1] if max_idxs[0] < (len(deriv) - 1 - max_idxs[1]) else (len(deriv) - 1)
 

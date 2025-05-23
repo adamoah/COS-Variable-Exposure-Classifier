@@ -1,6 +1,7 @@
 numpy
 scipy
 astropy
+scikit-learn
 matplotlib
 glob
 pickle

@@ -46,7 +46,7 @@ def main():
     f_neighbors = 0.5 # number of neighbors to consider when running lof (as a fraction of the total length of the count rate arrays)
     cutoff = 0.05 # fraction cutoff for significant segment lengths
     save_data = True # save the count_rate + parameter data
-    plot_cr = False # plots count rate data
+    plot_cr = True # plots count rate data
     derivative = False # Find MJD start and stop time using the derivative method. If False using maximum segment method
     logerror = False # whether or not to log files that were unable to be parsed due to an error
 

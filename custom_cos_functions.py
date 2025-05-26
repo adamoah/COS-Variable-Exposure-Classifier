@@ -489,7 +489,7 @@ def get_outlier_segments(idx_arr):
 
     return segment_lengths, idx_positions
 
-def get_derivative_positions(counts, ws=20, std=5, thresh=0.75, pad=100):
+def get_derivative_positions(counts, ws=20, std=5, thresh=0.75, min_dist=8, pad_p=0.05):
     '''
     Computes and returns the start and end positions of a rise/drop using the derivative method.
     Parameters
@@ -498,8 +498,9 @@ def get_derivative_positions(counts, ws=20, std=5, thresh=0.75, pad=100):
     z_mean: float, z_score mean of the outliers
     ws: int, size of the gaussan filter. Default is 20
     std: int, standard deviation of the gaussian filter. Default is 5
-    thresh: float, ratio threshold of the magintude of the start and end derivative. If the ratio is less than the threshold end is set to the end of the exposure. Default is 0.75
-    pad: int, how many indicies to pad the start and end index. Default is 100.
+    thresh: float, ratio threshold of the magintude of the start and end derivative. If the ratio is less than the threshold, the interval is bounded by the start or end of the exposure. Default is 0.75
+    min_dist: int, minimum distance, in indicies, between the start and end derivative. If the distance is less than the minimum, the interval is bounded by the start or end of the exposure. Default is 8
+    pad: float, how many indicies to pad the start and end index as a percentage of the computed interval. Default is 0.05.
     '''
     
     # smooth count rate signal and get gradient magnitudes
@@ -507,27 +508,38 @@ def get_derivative_positions(counts, ws=20, std=5, thresh=0.75, pad=100):
     smooth_x = convolve1d(counts, sliding_window, mode='reflect') / sum(sliding_window) 
     deriv = np.abs(np.gradient(smooth_x))
 
-    max_idxs = np.argpartition(deriv, len(deriv)-2)[-2:] # find the positions of the two highest magnitude in the derivative
+    max_idxs = np.argpartition(deriv, len(deriv)-2)[-2:] # find the positions of the two highest magnitudes in the derivative
     min_, max_ = np.min(max_idxs), np.max(max_idxs)
-    if ((deriv[max_idxs[0]] / deriv[max_idxs[1]]) < thresh): # if the deriv magnitudes are not close enough set one of the bounds to the start or end of the array (whichever is closer)
+    
+    # if the deriv magnitudes are not close enough or the distance is too short
+    # set one of the bounds to the start or end of the array (whichever is closer)
+    if (((deriv[max_idxs[0]] / deriv[max_idxs[1]]) < thresh) and (abs(max_idxs))):
         min_ = min_ if min_ >= (len(deriv) - 1 - max_) else 0
         max_ = max_ if min_ < (len(deriv) - 1 - max_) else (len(deriv) - 1)
 
+    pad = int(pad_p * (max_ - min_))
     # pad start and end use clip to ensure they do not go outside valid range
     idxs = np.clip([min_ - pad, max_ + pad], a_min=0, a_max=(len(deriv) - 1))
 
     return idxs[0], idxs[1]
 
-def get_max_zscore(z_score, idx_arr_2):
+def get_max_zscore(z_score, segment_lengths):
+    '''
+    computes and returns the z-score of the maximum segment
+    Parameters
+    ----------
+    z_score: array, the z_scores for all outliers detected by LOF
+    segment_lengths: array, the lengths of each continuous outlier segment
+    '''
 
-    zscore_mean = None
+    zscore_mean = None # will store the mean of the max segment
 
-    if len(idx_arr_2) > 0:
-        max_start = int(np.sum(idx_arr_2[:np.argmax(idx_arr_2)]))
-        max_end = int(max_start+np.max(idx_arr_2))
-        zscore_mean = np.mean(z_score[max_start:max_end])
+    if len(segment_lengths) > 0:
+        max_start = int(np.sum(segment_lengths[:np.argmax(segment_lengths)])) # get the starting index of the maximum segment
+        max_end = int(max_start+np.max(segment_lengths)) # get the ending index of the maximum segment
+        zscore_mean = np.mean(z_score[max_start:max_end]) # get the z_score mean of that interval
 
-    else:
+    else: # if there is no maximum segment get the z-score means of the outliers
         zscore_mean = np.mean(z_score)
 
     return zscore_mean

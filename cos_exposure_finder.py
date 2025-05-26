@@ -45,8 +45,9 @@ def main():
     # user defined variables
     f_neighbors = 0.5 # number of neighbors to consider when running lof (as a fraction of the total length of the count rate arrays)
     cutoff = 0.05 # fraction cutoff for significant segment lengths
-    save_data = True # save the count_rate + parameter data
+    save_data = True # save the count_rate + parameter data for all exposures
     plot_cr = True # plots count rate data
+    badttab = True # display and save bad time intervals for exposures within the parameter intervals
     derivative = False # Find MJD start and stop time using the derivative method. If False using maximum segment method
     logerror = False # whether or not to log files that were unable to be parsed due to an error
 
@@ -173,11 +174,6 @@ def main():
                 start, end = get_derivative_positions(x)
             else: # else use maximum segment method
                 start, end = idx_positions[np.argmax(segment_lengths)] if len(idx_positions) > 0 else (0, 0)
-            
-            # convert to MJD and append badttimes
-            START = expstart + (unique_timesteps[start] / (3600*24))
-            END = expstart + (unique_timesteps[end] / (3600*24))
-            badttimes += f"{name},{START}, {END}\n"
 
             # calculate stats
             max_ = np.max(segment_lengths) # stats for segment lengths
@@ -204,10 +200,18 @@ def main():
                 ax0.plot(unique_timesteps[:len(x)], x, color="#ff7f00", label=f"z-score: {z_mean}\nmax length: {max_}\nsegment count: {occur}")
                 ax0.plot(unique_timesteps[:len(x)], np.where(y==1, x, None), color="#377eb8")
 
-                # display badt start and end times
-                ax0.axvline(unique_timesteps[start], color='red', label=f'Start:({START})')
-                ax0.axvline(unique_timesteps[end], color='red', label=f'End ({END})')
-        
+                # display and save badt start and end times
+                if badttab:
+                    # convert to MJD and append badttimes
+                    START = expstart + (unique_timesteps[start] / (3600*24))
+                    END = expstart + (unique_timesteps[end] / (3600*24))
+                    badttimes += f"{name},{START}, {END}\n"
+
+                    # add start and end lines to the plot
+                    ax0.axvline(unique_timesteps[start], color='red', label=f'Start:({START})')
+                    ax0.axvline(unique_timesteps[end], color='red', label=f'End ({END})')
+
+                    
                 # plot labels 
                 ax0.set_title(name + ' Count Rate')
                 ax0.set_xlabel('seconds')

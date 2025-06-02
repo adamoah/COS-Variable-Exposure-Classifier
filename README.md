@@ -15,9 +15,11 @@ You can run the code by using the following terminal command
 python ./cos_exposure_finder.py -v -i ./input_dir/input.txt -o ./output_dir
 ```
 with the following command line arguments:
--v and -vv indicates the level of verbosity and how much informaion is printed to the screen during execution
--i indicates the path to the input text containing the exposure file paths (An example can be found in example.txt)
--o indicates the output directory to store any saved figures, data array, or log files
+1. -v and -vv indicates the level of verbosity and how much informaion is printed to the screen during execution
+2. -i indicates the path to the input text containing the exposure file paths (An example can be found in example.txt)
+3. -o indicates the output directory to store any saved figures, data array, or log files
+
+(Note: if you have an existing directory of exposure files and want to processing them using this code entering ```ls -d "$PWD"/* > ./input.txt``` to easily store the file paths in a text file.)
 
 You can also modify the following user defined variables in ```cos_exposure_finder.py``` to modify the code's behavior
 ```

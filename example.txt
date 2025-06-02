@@ -1,0 +1,19 @@
+## An example of what an input text file should look like. In this case absolute file paths are used however file paths relative to where the code is executed are also permissible
+
+/Users/adamoah/COS work/data/fits files/lbui11faq_corrtag_a.fits
+/Users/adamoah/COS work/data/fits files/lc1va0yeq_corrtag_a.fits
+/Users/adamoah/COS work/data/fits files/lc1va0yjq_corrtag_a.fits
+/Users/adamoah/COS work/data/fits files/lc1va0zcq_corrtag_a.fits
+/Users/adamoah/COS work/data/fits files/lc1va0zgq_corrtag_a.fits
+/Users/adamoah/COS work/data/fits files/lem508hrq_corrtag_a.fits
+/Users/adamoah/COS work/data/fits files/lem508hrq_corrtag_b.fits
+/Users/adamoah/COS work/data/fits files/lem508htq_corrtag_a.fits
+/Users/adamoah/COS work/data/fits files/lem508htq_corrtag_b.fits
+/Users/adamoah/COS work/data/fits files/lem508hvq_corrtag_a.fits
+/Users/adamoah/COS work/data/fits files/lem508hvq_corrtag_b.fits
+/Users/adamoah/COS work/data/fits files/lem508hxq_corrtag_a.fits
+/Users/adamoah/COS work/data/fits files/lem508hxq_corrtag_b.fits
+/Users/adamoah/COS work/data/fits files/lem508hzq_corrtag_a.fits
+/Users/adamoah/COS work/data/fits files/lem508hzq_corrtag_b.fits
+/Users/adamoah/COS work/data/fits files/lev0l1xqq_corrtag.fits
+/Users/adamoah/COS work/data/fits files/lev0l2geq_corrtag.fits

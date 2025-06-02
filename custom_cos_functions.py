@@ -513,7 +513,7 @@ def get_derivative_positions(counts, ws=20, std=5, thresh=0.75, min_dist=8, pad_
     
     # if the deriv magnitudes are not close enough or the distance is too short
     # set one of the bounds to the start or end of the array (whichever is closer)
-    if (((deriv[max_idxs[0]] / deriv[max_idxs[1]]) < thresh) and (abs(max_idxs))):
+    if (((deriv[max_idxs[0]] / deriv[max_idxs[1]]) < thresh) and ((max_ - min_) < min_dist)):
         min_ = min_ if min_ >= (len(deriv) - 1 - max_) else 0
         max_ = max_ if min_ < (len(deriv) - 1 - max_) else (len(deriv) - 1)
 
